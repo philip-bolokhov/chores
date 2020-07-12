@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "507795994303",
+    "firebase_url": "https://daily-chore.firebaseio.com",
+    "project_id": "daily-chore",
+    "storage_bucket": "daily-chore.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:507795994303:android:df0e62a4c3a37a61bcf80a",
+        "android_client_info": {
+          "package_name": "app.web.daily_chore"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "507795994303-8oaoi65ih6c40jeaetpaqltu9r3h20n6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCo7uWS9vAiMj-LsI7TvAJljWLeKeC3CXU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "507795994303-8oaoi65ih6c40jeaetpaqltu9r3h20n6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -68,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
     var _chores = [
       "Water the flowers",
       "Brush the cat",
-      "Cook dinner", 
+      "Cook dinner",
       "Morning exercise",
     ];
     var _completeChores = [
@@ -86,38 +86,34 @@ class _MyHomePageState extends State<MyHomePage> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          bottom: TabBar(
-            tabs: [
-              Tab(text: "Open"),
-              Tab(text: "Complete"),
-            ]
-          ),
+          bottom: TabBar(tabs: [
+            Tab(text: "Open"),
+            Tab(text: "Complete"),
+          ]),
           // Here we take the value from the MyHomePage object that was created by
           // the App.build method, and use it to set our appbar title.
           title: Text(widget.title),
         ),
-        body: TabBarView(
-          children: [
-            ListView.builder(
-              itemBuilder: (context, position) {
-                return ListTile( 
-                  leading: Icon(Icons.schedule),
-                  title: Text(_chores[position]),
-                );
-              },
-              itemCount: _chores.length,
-            ),
-             ListView.builder(
-              itemBuilder: (context, position) {
-                return ListTile( 
-                  leading: Icon(Icons.schedule),
-                  title: Text(_completeChores[position]),
-                );
-              },
-              itemCount: _completeChores.length,
-            ),
-          ]
-        ),
+        body: TabBarView(children: [
+          ListView.builder(
+            itemBuilder: (context, position) {
+              return ListTile(
+                leading: Icon(Icons.schedule),
+                title: Text(_chores[position]),
+              );
+            },
+            itemCount: _chores.length,
+          ),
+          ListView.builder(
+            itemBuilder: (context, position) {
+              return ListTile(
+                leading: Icon(Icons.schedule),
+                title: Text(_completeChores[position]),
+              );
+            },
+            itemCount: _completeChores.length,
+          ),
+        ]),
       ),
     );
   }

@@ -50,24 +50,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
   var _choreChecked = [
     false,
     false,
     false,
     false,
   ];
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  var _completeChoresChecked = [
+    true,
+    true,
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -118,9 +110,15 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           ListView.builder(
             itemBuilder: (context, position) {
-              return ListTile(
-                leading: Icon(Icons.schedule),
+              return CheckboxListTile(
                 title: Text(_completeChores[position]),
+                value: _completeChoresChecked[position],
+                secondary: Icon(Icons.schedule),
+                onChanged: (bool newValue) {
+                  setState(() {
+                    _completeChoresChecked[position] = newValue;
+                  });
+                },
               );
             },
             itemCount: _completeChores.length,

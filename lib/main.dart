@@ -51,6 +51,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  var _choreChecked = [
+    false,
+    false,
+    false,
+    false,
+  ];
 
   void _incrementCounter() {
     setState(() {
@@ -97,9 +103,15 @@ class _MyHomePageState extends State<MyHomePage> {
         body: TabBarView(children: [
           ListView.builder(
             itemBuilder: (context, position) {
-              return ListTile(
-                leading: Icon(Icons.schedule),
+              return CheckboxListTile(
                 title: Text(_chores[position]),
+                value: _choreChecked[position],
+                secondary: Icon(Icons.schedule),
+                onChanged: (bool newValue) {
+                  setState(() {
+                    _choreChecked[position] = newValue;
+                  });
+                },
               );
             },
             itemCount: _chores.length,

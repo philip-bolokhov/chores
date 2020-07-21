@@ -18,7 +18,8 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
-<!-- This script installs service_worker.js to provide PWA functionality to
+
+  <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
        https://developers.google.com/web/fundamentals/primers/service-workers -->
   <script>
@@ -28,6 +29,14 @@
       });
     }
   </script>
+
+  <!-- The splash image -->
+  <div style="width: 100%;
+              height: 100%;
+              background-image: url(assets/images/sparks_fly.jpg);
+              background-size: cover">
+  </div>
+
   <!-- The core Firebase JS SDK is always required and must be listed first -->
   <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-app.js"></script>
 

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  Future.delayed(Duration(seconds: 3), () {
+    runApp(MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {

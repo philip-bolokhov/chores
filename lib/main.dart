@@ -58,20 +58,20 @@ class _MyHomePageState extends State<MyHomePage> {
     false,
     false,
   ];
-  var _completeChoresChecked = [
+  var _completedChoresChecked = [
     true,
     true,
   ];
 
   @override
   Widget build(BuildContext context) {
-    var _chores = [
+    var _openChores = [
       "Water the flowers",
       "Brush the cat",
       "Cook dinner",
       "Morning exercise",
     ];
-    var _completeChores = [
+    var _completedChores = [
       "Play Valorant",
       "Play Fortnite",
     ];
@@ -87,8 +87,8 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Scaffold(
         appBar: AppBar(
           bottom: TabBar(tabs: [
-            Tab(text: "Open"),
-            Tab(text: "Complete"),
+            Tab(text: "Tasks"),
+            Tab(text: "Completed Tasks"),
           ]),
           // Here we take the value from the MyHomePage object that was created by
           // the App.build method, and use it to set our appbar title.
@@ -98,34 +98,34 @@ class _MyHomePageState extends State<MyHomePage> {
           ListView.builder(
             itemBuilder: (context, position) {
               return CheckboxListTile(
-                title: Text(_chores[position]),
+                title: Text(_openChores[position]),
                 value: _choresChecked[position],
                 secondary: Icon(Icons.schedule),
                 onChanged: (bool newValue) {
                   setState(() {
                     _choresChecked[position] = newValue;
                   });
-                  _chores.removeAt(position);
+                  _openChores.removeAt(position);
                   _choresChecked.removeAt(position);
                 },
               );
             },
-            itemCount: _chores.length,
+            itemCount: _openChores.length,
           ),
           ListView.builder(
             itemBuilder: (context, position) {
               return CheckboxListTile(
-                title: Text(_completeChores[position]),
-                value: _completeChoresChecked[position],
+                title: Text(_completedChores[position]),
+                value: _completedChoresChecked[position],
                 secondary: Icon(Icons.schedule),
                 onChanged: (bool newValue) {
                   setState(() {
-                    _completeChoresChecked[position] = newValue;
+                    _completedChoresChecked[position] = newValue;
                   });
                 },
               );
             },
-            itemCount: _completeChores.length,
+            itemCount: _completedChores.length,
           ),
         ]),
       ),

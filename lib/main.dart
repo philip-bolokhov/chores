@@ -52,7 +52,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var _choreChecked = [
+  var _choresChecked = [
     false,
     false,
     false,
@@ -99,12 +99,14 @@ class _MyHomePageState extends State<MyHomePage> {
             itemBuilder: (context, position) {
               return CheckboxListTile(
                 title: Text(_chores[position]),
-                value: _choreChecked[position],
+                value: _choresChecked[position],
                 secondary: Icon(Icons.schedule),
                 onChanged: (bool newValue) {
                   setState(() {
-                    _choreChecked[position] = newValue;
+                    _choresChecked[position] = newValue;
                   });
+                  _chores.removeAt(position);
+                  _choresChecked.removeAt(position);
                 },
               );
             },

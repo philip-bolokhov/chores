@@ -86,9 +86,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 return new Text('Error: ${snapshot.error}');
               switch (snapshot.connectionState) {
                 case ConnectionState.waiting:
-                  return new Text('Loading...');
+                  return Center(
+                      child: SizedBox(
+                          width: 60,
+                          height: 60,
+                          child: CircularProgressIndicator()));
                 default:
-                  _openChoresChecked.length = snapshot.data.documents.length;
                   return new ListView(
                     children: snapshot.data.documents
                         .asMap()
@@ -117,10 +120,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 return new Text('Error: ${snapshot.error}');
               switch (snapshot.connectionState) {
                 case ConnectionState.waiting:
-                  return new Text('Loading...');
+                  return Center(
+                      child: SizedBox(
+                          width: 60,
+                          height: 60,
+                          child: CircularProgressIndicator()));
                 default:
-                  _completedChoresChecked.length =
-                      snapshot.data.documents.length;
                   return new ListView(
                     children: snapshot.data.documents
                         .asMap()

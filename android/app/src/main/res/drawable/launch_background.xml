@@ -7,6 +7,6 @@
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@drawable/sparks_fly" />
+            android:src="@drawable/kitchen" />
     </item>
 </layer-list>

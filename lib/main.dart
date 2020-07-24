@@ -56,18 +56,11 @@ class _MyHomePageState extends State<MyHomePage> {
   var _openChoresChecked = new List<bool>.filled(100, false,
       growable: true); // AAAA 100 has to be changed
 
-  var _completedChoresChecked = [
-    true,
-    true,
-  ];
+  var _completedChoresChecked = new List<bool>.filled(100, false,
+      growable: true); // AAAA 100 has to be changed
 
   @override
   Widget build(BuildContext context) {
-    var _completedChores = [
-      "Play Valorant",
-      "Play Fortnite",
-    ];
-
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
@@ -115,20 +108,38 @@ class _MyHomePageState extends State<MyHomePage> {
               }
             },
           ),
-          ListView.builder(
-            itemBuilder: (context, position) {
-              return CheckboxListTile(
-                title: Text(_completedChores[position]),
-                value: _completedChoresChecked[position],
-                secondary: Icon(Icons.schedule),
-                onChanged: (bool newValue) {
-                  setState(() {
-                    _completedChoresChecked[position] = newValue;
-                  });
-                },
-              );
+          StreamBuilder<QuerySnapshot>(
+            stream:
+                Firestore.instance.collection('completedChores').snapshots(),
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasError)
+                return new Text('Error: ${snapshot.error}');
+              switch (snapshot.connectionState) {
+                case ConnectionState.waiting:
+                  return new Text('Loading...');
+                default:
+                  _completedChoresChecked.length =
+                      snapshot.data.documents.length;
+                  return new ListView(
+                    children: snapshot.data.documents
+                        .asMap()
+                        .entries
+                        .map((MapEntry<int, DocumentSnapshot> documentEntry) {
+                      return new CheckboxListTile(
+                          title: new Text(documentEntry.value['title']),
+                          value: _completedChoresChecked[documentEntry.key],
+                          secondary: Icon(Icons.schedule),
+                          onChanged: (bool newValue) {
+                            setState(() {
+                              _completedChoresChecked[documentEntry.key] =
+                                  newValue;
+                            });
+                          });
+                    }).toList(),
+                  );
+              }
             },
-            itemCount: _completedChores.length,
           ),
         ]),
       ),

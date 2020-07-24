@@ -53,12 +53,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var _choresChecked = [
-    false,
-    false,
-    false,
-    false,
-  ];
+  var _openChoresChecked = new List<bool>.filled(100, false,
+      growable: true); // AAAA 100 has to be changed
+
   var _completedChoresChecked = [
     true,
     true,
@@ -98,34 +95,26 @@ class _MyHomePageState extends State<MyHomePage> {
                 case ConnectionState.waiting:
                   return new Text('Loading...');
                 default:
+                  _openChoresChecked.length = snapshot.data.documents.length;
                   return new ListView(
                     children: snapshot.data.documents
-                        .map((DocumentSnapshot document) {
-                      return new ListTile(
-                        title: new Text(document['title']),
-                      );
+                        .asMap()
+                        .entries
+                        .map((MapEntry<int, DocumentSnapshot> documentEntry) {
+                      return new CheckboxListTile(
+                          title: new Text(documentEntry.value['title']),
+                          value: _openChoresChecked[documentEntry.key],
+                          secondary: Icon(Icons.schedule),
+                          onChanged: (bool newValue) {
+                            setState(() {
+                              _openChoresChecked[documentEntry.key] = newValue;
+                            });
+                          });
                     }).toList(),
                   );
               }
             },
           ),
-          // ListView.builder(
-          //   itemBuilder: (context, position) {
-          //     return CheckboxListTile(
-          //       title: Text(_openChores[position]),
-          //       value: _choresChecked[position],
-          //       secondary: Icon(Icons.schedule),
-          //       onChanged: (bool newValue) {
-          //         setState(() {
-          //           _choresChecked[position] = newValue;
-          //         });
-          //         _openChores.removeAt(position);
-          //         _choresChecked.removeAt(position);
-          //       },
-          //     );
-          //   },
-          //   itemCount: _openChores.length,
-          // ),
           ListView.builder(
             itemBuilder: (context, position) {
               return CheckboxListTile(

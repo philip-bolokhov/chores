@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() {
   Future.delayed(Duration(seconds: 3), () {
@@ -65,19 +66,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var _openChores = [
-      "Water the flowers",
-      "Brush the cat",
-      "Cook dinner",
-      "Morning exercise",
-    ];
     var _completedChores = [
       "Play Valorant",
       "Play Fortnite",
     ];
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
+
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
@@ -95,23 +88,44 @@ class _MyHomePageState extends State<MyHomePage> {
           title: Text(widget.title),
         ),
         body: TabBarView(children: [
-          ListView.builder(
-            itemBuilder: (context, position) {
-              return CheckboxListTile(
-                title: Text(_openChores[position]),
-                value: _choresChecked[position],
-                secondary: Icon(Icons.schedule),
-                onChanged: (bool newValue) {
-                  setState(() {
-                    _choresChecked[position] = newValue;
-                  });
-                  _openChores.removeAt(position);
-                  _choresChecked.removeAt(position);
-                },
-              );
+          StreamBuilder<QuerySnapshot>(
+            stream: Firestore.instance.collection('openChores').snapshots(),
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasError)
+                return new Text('Error: ${snapshot.error}');
+              switch (snapshot.connectionState) {
+                case ConnectionState.waiting:
+                  return new Text('Loading...');
+                default:
+                  return new ListView(
+                    children: snapshot.data.documents
+                        .map((DocumentSnapshot document) {
+                      return new ListTile(
+                        title: new Text(document['title']),
+                      );
+                    }).toList(),
+                  );
+              }
             },
-            itemCount: _openChores.length,
           ),
+          // ListView.builder(
+          //   itemBuilder: (context, position) {
+          //     return CheckboxListTile(
+          //       title: Text(_openChores[position]),
+          //       value: _choresChecked[position],
+          //       secondary: Icon(Icons.schedule),
+          //       onChanged: (bool newValue) {
+          //         setState(() {
+          //           _choresChecked[position] = newValue;
+          //         });
+          //         _openChores.removeAt(position);
+          //         _choresChecked.removeAt(position);
+          //       },
+          //     );
+          //   },
+          //   itemCount: _openChores.length,
+          // ),
           ListView.builder(
             itemBuilder: (context, position) {
               return CheckboxListTile(

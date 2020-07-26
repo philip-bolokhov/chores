@@ -57,12 +57,25 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+class _ChoreCheckedData {
+  String documentID;
+  bool checked;
+  _ChoreCheckedData(this.documentID, this.checked);
+}
+
 class _MyHomePageState extends State<MyHomePage> {
-  var _openChoresChecked = new List<bool>.filled(100, false,
+  var _openChoresChecked = new List<_ChoreCheckedData>.generate(
+      100, (_) => new _ChoreCheckedData("", false),
       growable: true); // AAAA 100 has to be changed
 
   var _completedChoresChecked = new List<bool>.filled(100, false,
       growable: true); // AAAA 100 has to be changed
+
+  void _applySelected() {
+    _openChoresChecked.where((element) => element.checked).forEach((element) {
+      print(element.documentID);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,14 +118,17 @@ class _MyHomePageState extends State<MyHomePage> {
                         return new ListView(
                           children: snapshot.data.documents.asMap().entries.map(
                               (MapEntry<int, DocumentSnapshot> documentEntry) {
+                            _openChoresChecked[documentEntry.key].documentID =
+                                documentEntry.value.documentID;
                             return new CheckboxListTile(
                                 title: new Text(documentEntry.value['title']),
-                                value: _openChoresChecked[documentEntry.key],
+                                value: _openChoresChecked[documentEntry.key]
+                                    .checked,
                                 secondary: Icon(Icons.schedule),
                                 onChanged: (bool newValue) {
                                   setState(() {
-                                    _openChoresChecked[documentEntry.key] =
-                                        newValue;
+                                    _openChoresChecked[documentEntry.key]
+                                        .checked = newValue;
                                   });
                                 });
                           }).toList(),
@@ -122,7 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               RaisedButton(
-                onPressed: () {},
+                onPressed: _applySelected,
                 textColor: Colors.white,
                 padding: const EdgeInsets.all(0.0),
                 child: Container(
@@ -139,7 +155,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   padding: const EdgeInsets.all(10.0),
                   child: Center(
                       child:
-                          const Text('Apply', style: TextStyle(fontSize: 20))),
+                          const Text('Apply', style: TextStyle(fontSize: 14))),
                 ),
               ),
               const SizedBox(height: 15),

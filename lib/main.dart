@@ -84,38 +84,66 @@ class _MyHomePageState extends State<MyHomePage> {
           centerTitle: true,
         ),
         body: TabBarView(children: [
-          StreamBuilder<QuerySnapshot>(
-            stream: Firestore.instance.collection('openChores').snapshots(),
-            builder:
-                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.hasError)
-                return new Text('Error: ${snapshot.error}');
-              switch (snapshot.connectionState) {
-                case ConnectionState.waiting:
-                  return Center(
-                      child: SizedBox(
-                          width: 60,
-                          height: 60,
-                          child: CircularProgressIndicator()));
-                default:
-                  return new ListView(
-                    children: snapshot.data.documents
-                        .asMap()
-                        .entries
-                        .map((MapEntry<int, DocumentSnapshot> documentEntry) {
-                      return new CheckboxListTile(
-                          title: new Text(documentEntry.value['title']),
-                          value: _openChoresChecked[documentEntry.key],
-                          secondary: Icon(Icons.schedule),
-                          onChanged: (bool newValue) {
-                            setState(() {
-                              _openChoresChecked[documentEntry.key] = newValue;
-                            });
-                          });
-                    }).toList(),
-                  );
-              }
-            },
+          Column(
+            children: [
+              Expanded(
+                child: StreamBuilder<QuerySnapshot>(
+                  stream:
+                      Firestore.instance.collection('openChores').snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.hasError)
+                      return new Text('Error: ${snapshot.error}');
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.waiting:
+                        return Center(
+                            child: SizedBox(
+                                width: 60,
+                                height: 60,
+                                child: CircularProgressIndicator()));
+                      default:
+                        return new ListView(
+                          children: snapshot.data.documents.asMap().entries.map(
+                              (MapEntry<int, DocumentSnapshot> documentEntry) {
+                            return new CheckboxListTile(
+                                title: new Text(documentEntry.value['title']),
+                                value: _openChoresChecked[documentEntry.key],
+                                secondary: Icon(Icons.schedule),
+                                onChanged: (bool newValue) {
+                                  setState(() {
+                                    _openChoresChecked[documentEntry.key] =
+                                        newValue;
+                                  });
+                                });
+                          }).toList(),
+                        );
+                    }
+                  },
+                ),
+              ),
+              RaisedButton(
+                onPressed: () {},
+                textColor: Colors.white,
+                padding: const EdgeInsets.all(0.0),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: <Color>[
+                        Color(0xFF0D47A1),
+                        Color(0xFF1976D2),
+                        Color(0xFF42A5F5),
+                      ],
+                    ),
+                  ),
+                  width: 90,
+                  padding: const EdgeInsets.all(10.0),
+                  child: Center(
+                      child:
+                          const Text('Apply', style: TextStyle(fontSize: 20))),
+                ),
+              ),
+              const SizedBox(height: 15),
+            ],
           ),
           StreamBuilder<QuerySnapshot>(
             stream:

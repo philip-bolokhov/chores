@@ -153,27 +153,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                 ),
               ),
-              RaisedButton(
-                onPressed: _applySelected,
-                textColor: Colors.white,
-                padding: const EdgeInsets.all(0.0),
-                child: Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: <Color>[
-                        Color(0xFF0D47A1),
-                        Color(0xFF1976D2),
-                        Color(0xFF42A5F5),
-                      ],
-                    ),
-                  ),
-                  width: 90,
-                  padding: const EdgeInsets.all(10.0),
-                  child: Center(
-                      child:
-                          const Text('Apply', style: TextStyle(fontSize: 14))),
-                ),
-              ),
+              ChoresMainButton('Apply', _applySelected),
               const SizedBox(height: 15),
             ],
           ),
@@ -212,6 +192,36 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
         ]),
+      ),
+    );
+  }
+}
+
+class ChoresMainButton extends StatelessWidget {
+  final String _title;
+  final Function _onPressed;
+
+  ChoresMainButton(this._title, this._onPressed);
+
+  @override
+  Widget build(BuildContext context) {
+    return RaisedButton(
+      onPressed: _onPressed,
+      textColor: Colors.white,
+      padding: const EdgeInsets.all(0.0),
+      child: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: <Color>[
+              Color(0xFF0D47A1),
+              Color(0xFF1976D2),
+              Color(0xFF42A5F5),
+            ],
+          ),
+        ),
+        width: 90,
+        padding: const EdgeInsets.all(10.0),
+        child: Center(child: Text(_title, style: TextStyle(fontSize: 14))),
       ),
     );
   }

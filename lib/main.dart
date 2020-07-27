@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'chores_list_tab_view.dart';
 
 void main() {
   Future.delayed(Duration(seconds: 3), () {
@@ -57,19 +58,13 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _ChoreCheckedData {
-  String documentID;
-  String title;
-  bool checked;
-  _ChoreCheckedData(this.documentID, this.title, this.checked);
-}
-
 class _MyHomePageState extends State<MyHomePage> {
-  var _openChoresChecked = new List<_ChoreCheckedData>.generate(
-      100, (_) => new _ChoreCheckedData("", "", false),
+  var _openChoresChecked = new List<ChoreCheckedData>.generate(
+      100, (_) => new ChoreCheckedData("", "", false),
       growable: true); // AAAA 100 has to be changed
 
-  var _completedChoresChecked = new List<bool>.filled(100, false,
+  var _completedChoresChecked = new List<ChoreCheckedData>.generate(
+      100, (_) => new ChoreCheckedData("", "", false),
       growable: true); // AAAA 100 has to be changed
 
   /*
@@ -86,8 +81,26 @@ class _MyHomePageState extends State<MyHomePage> {
         'title': element.title,
       });
       await _openChoresRef.document(element.documentID).delete();
+    });
 
-      // Unselect the chore
+    // Unselect all selected chores
+    _openChoresChecked.forEach((element) {
+      element.checked = false;
+    });
+  }
+
+  void _restoreSelected() {
+    _completedChoresChecked
+        .where((element) => element.checked)
+        .forEach((element) async {
+      await _openChoresRef.add({
+        'title': element.title,
+      });
+      await _completedChoresRef.document(element.documentID).delete();
+    });
+
+    // Unselect all selected chores
+    _completedChoresChecked.forEach((element) {
       element.checked = false;
     });
   }
@@ -112,116 +125,19 @@ class _MyHomePageState extends State<MyHomePage> {
           centerTitle: true,
         ),
         body: TabBarView(children: [
-          Column(
-            children: [
-              Expanded(
-                child: StreamBuilder<QuerySnapshot>(
-                  stream: _openChoresRef.snapshots(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (snapshot.hasError)
-                      return new Text('Error: ${snapshot.error}');
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
-                        return Center(
-                            child: SizedBox(
-                                width: 60,
-                                height: 60,
-                                child: CircularProgressIndicator()));
-                      default:
-                        return new ListView(
-                          children: snapshot.data.documents.asMap().entries.map(
-                              (MapEntry<int, DocumentSnapshot> documentEntry) {
-                            _openChoresChecked[documentEntry.key].documentID =
-                                documentEntry.value.documentID;
-                            _openChoresChecked[documentEntry.key].title =
-                                documentEntry.value['title'];
-                            return new CheckboxListTile(
-                                title: new Text(documentEntry.value['title']),
-                                value: _openChoresChecked[documentEntry.key]
-                                    .checked,
-                                secondary: Icon(Icons.schedule),
-                                onChanged: (bool newValue) {
-                                  setState(() {
-                                    _openChoresChecked[documentEntry.key]
-                                        .checked = newValue;
-                                  });
-                                });
-                          }).toList(),
-                        );
-                    }
-                  },
-                ),
-              ),
-              ChoresMainButton('Apply', _applySelected),
-              const SizedBox(height: 15),
-            ],
+          ChoresListTabView(
+            choresCollection: _openChoresRef,
+            choresChecked: _openChoresChecked,
+            buttonTitle: 'Apply',
+            buttonFunction: _applySelected,
           ),
-          StreamBuilder<QuerySnapshot>(
-            stream: _completedChoresRef.snapshots(),
-            builder:
-                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.hasError)
-                return new Text('Error: ${snapshot.error}');
-              switch (snapshot.connectionState) {
-                case ConnectionState.waiting:
-                  return Center(
-                      child: SizedBox(
-                          width: 60,
-                          height: 60,
-                          child: CircularProgressIndicator()));
-                default:
-                  return new ListView(
-                    children: snapshot.data.documents
-                        .asMap()
-                        .entries
-                        .map((MapEntry<int, DocumentSnapshot> documentEntry) {
-                      return new CheckboxListTile(
-                          title: new Text(documentEntry.value['title']),
-                          value: _completedChoresChecked[documentEntry.key],
-                          secondary: Icon(Icons.schedule),
-                          onChanged: (bool newValue) {
-                            setState(() {
-                              _completedChoresChecked[documentEntry.key] =
-                                  newValue;
-                            });
-                          });
-                    }).toList(),
-                  );
-              }
-            },
+          ChoresListTabView(
+            choresCollection: _completedChoresRef,
+            choresChecked: _completedChoresChecked,
+            buttonTitle: 'Restore',
+            buttonFunction: _restoreSelected,
           ),
         ]),
-      ),
-    );
-  }
-}
-
-class ChoresMainButton extends StatelessWidget {
-  final String _title;
-  final Function _onPressed;
-
-  ChoresMainButton(this._title, this._onPressed);
-
-  @override
-  Widget build(BuildContext context) {
-    return RaisedButton(
-      onPressed: _onPressed,
-      textColor: Colors.white,
-      padding: const EdgeInsets.all(0.0),
-      child: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: <Color>[
-              Color(0xFF0D47A1),
-              Color(0xFF1976D2),
-              Color(0xFF42A5F5),
-            ],
-          ),
-        ),
-        width: 90,
-        padding: const EdgeInsets.all(10.0),
-        child: Center(child: Text(_title, style: TextStyle(fontSize: 14))),
       ),
     );
   }

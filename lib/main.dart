@@ -59,21 +59,36 @@ class MyHomePage extends StatefulWidget {
 
 class _ChoreCheckedData {
   String documentID;
+  String title;
   bool checked;
-  _ChoreCheckedData(this.documentID, this.checked);
+  _ChoreCheckedData(this.documentID, this.title, this.checked);
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   var _openChoresChecked = new List<_ChoreCheckedData>.generate(
-      100, (_) => new _ChoreCheckedData("", false),
+      100, (_) => new _ChoreCheckedData("", "", false),
       growable: true); // AAAA 100 has to be changed
 
   var _completedChoresChecked = new List<bool>.filled(100, false,
       growable: true); // AAAA 100 has to be changed
 
+  /*
+   * Firestore collection references to the collections of chores
+   */
+  var _openChoresRef = Firestore.instance.collection('openChores');
+  var _completedChoresRef = Firestore.instance.collection('completedChores');
+
   void _applySelected() {
-    _openChoresChecked.where((element) => element.checked).forEach((element) {
-      print(element.documentID);
+    _openChoresChecked
+        .where((element) => element.checked)
+        .forEach((element) async {
+      await _completedChoresRef.add({
+        'title': element.title,
+      });
+      await _openChoresRef.document(element.documentID).delete();
+
+      // Unselect the chore
+      element.checked = false;
     });
   }
 
@@ -101,8 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
-                  stream:
-                      Firestore.instance.collection('openChores').snapshots(),
+                  stream: _openChoresRef.snapshots(),
                   builder: (BuildContext context,
                       AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (snapshot.hasError)
@@ -120,6 +134,8 @@ class _MyHomePageState extends State<MyHomePage> {
                               (MapEntry<int, DocumentSnapshot> documentEntry) {
                             _openChoresChecked[documentEntry.key].documentID =
                                 documentEntry.value.documentID;
+                            _openChoresChecked[documentEntry.key].title =
+                                documentEntry.value['title'];
                             return new CheckboxListTile(
                                 title: new Text(documentEntry.value['title']),
                                 value: _openChoresChecked[documentEntry.key]
@@ -162,8 +178,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
           StreamBuilder<QuerySnapshot>(
-            stream:
-                Firestore.instance.collection('completedChores').snapshots(),
+            stream: _completedChoresRef.snapshots(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError)

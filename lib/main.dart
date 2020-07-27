@@ -38,27 +38,27 @@ class MyApp extends StatelessWidget {
     double padding = (constraints.maxWidth - MAX_PAGE_WIDTH) / 2.0;
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: padding),
-      child: MyHomePage(),
+      child: HomePage(),
     );
   }
 
   Widget _normalLayout() {
-    return MyHomePage();
+    return HomePage();
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  HomePage({Key key}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
   // how it looks.
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _HomePageState extends State<HomePage> {
   var _openChoresChecked = new List<ChoreCheckedData>.generate(
       100, (_) => new ChoreCheckedData("", "", false),
       growable: true); // AAAA 100 has to be changed
@@ -119,7 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Tab(text: "Tasks"),
             Tab(text: "Completed Tasks"),
           ]),
-          // Here we take the value from the MyHomePage object that was created by
+          // Here we take the value from the HomePage object that was created by
           // the App.build method, and use it to set our appbar title.
           title: Text('Chores'),
           centerTitle: true,

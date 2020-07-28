@@ -16,13 +16,51 @@ class EditChoreView extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
-        title: Text('Edit the chore'),
+        title: Text('Edit chore details'),
       ),
-      body: Center(
-        child: Text(
-          "Editing '${chore['title']}'",
-          style: TextStyle(
-              fontSize: 16, color: Colors.purple, fontWeight: FontWeight.bold),
+      body: Container(
+        padding: EdgeInsets.symmetric(horizontal: 40),
+        child: Column(
+          children: [
+            Expanded(
+              child: Column(
+                children: [
+                  SizedBox(height: 20),
+                  TextFormField(
+                    initialValue: chore['title'],
+                    decoration: InputDecoration(
+                      labelText: 'Chore title',
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  TextFormField(
+                    minLines: 2,
+                    maxLines: 3,
+                    decoration: InputDecoration(
+                      labelText: 'Description',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                RaisedButton(
+                  child: Text('Save'),
+                  onPressed: () {},
+                ),
+                FlatButton(
+                  child: Text('Cancel'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                )
+              ],
+            ),
+            SizedBox(height: 20),
+          ],
         ),
       ),
     );

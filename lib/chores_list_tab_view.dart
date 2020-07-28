@@ -1,3 +1,4 @@
+import 'package:chores/routing_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -67,22 +68,36 @@ class _ChoresListTabViewState extends State<ChoresListTabView> {
                           value:
                               widget._choresChecked[documentEntry.key].checked,
                           secondary: PopupMenuButton<String>(
-                            itemBuilder: (BuildContext context) {
-                              return [
-                                PopupMenuItem<String>(
-                                  value: 'edit',
-                                  child: Text('Edit'),
-                                ),
-                                PopupMenuItem<String>(
-                                  value: 'delete',
-                                  child: Text('Delete'),
-                                ),
-                              ];
-                            },
-                            onSelected: (value) => print(
+                              itemBuilder: (BuildContext context) {
+                            return [
+                              PopupMenuItem<String>(
+                                value: 'edit',
+                                child: Text('Edit'),
+                              ),
+                              PopupMenuItem<String>(
+                                value: 'delete',
+                                child: Text('Delete'),
+                              ),
+                            ];
+                          }, onSelected: (value) async {
+                            print(
                                 "Selected item '${documentEntry.value.data['title']}' → " +
-                                    value),
-                          ),
+                                    value);
+                            switch (value) {
+                              case 'edit':
+                                await Navigator.pushNamed(
+                                    context, EditChoreViewRoute, arguments: {
+                                  'title': documentEntry.value.data['title'],
+                                  'action': value
+                                });
+                                break;
+
+                              case 'delete':
+                                break;
+
+                              default:
+                            }
+                          }),
                           onChanged: (bool newValue) {
                             setState(() {
                               widget._choresChecked[documentEntry.key].checked =

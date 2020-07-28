@@ -66,7 +66,23 @@ class _ChoresListTabViewState extends State<ChoresListTabView> {
                           title: new Text(documentEntry.value['title']),
                           value:
                               widget._choresChecked[documentEntry.key].checked,
-                          secondary: Icon(Icons.schedule),
+                          secondary: PopupMenuButton<String>(
+                            itemBuilder: (BuildContext context) {
+                              return [
+                                PopupMenuItem<String>(
+                                  value: 'edit',
+                                  child: Text('Edit'),
+                                ),
+                                PopupMenuItem<String>(
+                                  value: 'delete',
+                                  child: Text('Delete'),
+                                ),
+                              ];
+                            },
+                            onSelected: (value) => print(
+                                "Selected item '${documentEntry.value.data['title']}' → " +
+                                    value),
+                          ),
                           onChanged: (bool newValue) {
                             setState(() {
                               widget._choresChecked[documentEntry.key].checked =

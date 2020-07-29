@@ -29,7 +29,7 @@ class EditChoreView extends StatelessWidget {
                   TextFormField(
                     initialValue: chore['title'],
                     decoration: InputDecoration(
-                      labelText: 'Chore title',
+                      labelText: 'Title',
                     ),
                   ),
                   SizedBox(height: 20),

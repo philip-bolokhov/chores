@@ -72,11 +72,23 @@ class _ChoresListTabViewState extends State<ChoresListTabView> {
                             return [
                               PopupMenuItem<String>(
                                 value: 'edit',
-                                child: Text('Edit'),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.create),
+                                    SizedBox(width: 20),
+                                    Text('Edit'),
+                                  ],
+                                ),
                               ),
                               PopupMenuItem<String>(
                                 value: 'delete',
-                                child: Text('Delete'),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.delete),
+                                    SizedBox(width: 20),
+                                    Text('Delete'),
+                                  ],
+                                ),
                               ),
                             ];
                           }, onSelected: (value) async {

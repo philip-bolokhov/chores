@@ -10,7 +10,7 @@ Route<dynamic> generateRoutes(RouteSettings routeSettings) {
 
     case EditChoreViewRoute:
       return MaterialPageRoute(
-          builder: (context) => EditChoreView(chore: routeSettings.arguments));
+          builder: (context) => EditChoreView(routeSettings.arguments));
 
     default:
       return MaterialPageRoute(builder: (context) => HomePageView());

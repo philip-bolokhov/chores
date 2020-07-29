@@ -16,8 +16,8 @@ class ChoreCheckedData {
 /// The main widget — the tab view with a button at the bottom
 ///
 class ChoresListTabView extends StatefulWidget {
-  final _choresCollection;
-  final _choresChecked;
+  final CollectionReference _choresCollection;
+  final List<ChoreCheckedData> _choresChecked;
   final Function _addButtonBuilder;
   final String _buttonTitle;
   final Function _buttonFunction;
@@ -106,11 +106,21 @@ class _ChoresListTabViewState extends State<ChoresListTabView> {
                                       value);
                               switch (value) {
                                 case 'edit':
-                                  await Navigator.pushNamed(
-                                      context, EditChoreViewRoute, arguments: {
-                                    'title': documentEntry.value.data['title'],
-                                    'action': value
-                                  });
+                                  var result = await Navigator.pushNamed(
+                                      context, EditChoreViewRoute,
+                                      arguments: {
+                                        'data': widget
+                                            ._choresChecked[documentEntry.key],
+                                        'reference': widget._choresCollection,
+                                      });
+                                  if (result == "cancel") {
+                                    break;
+                                  }
+                                  final snackBar = SnackBar(
+                                      content: Text(result == "success"
+                                          ? "Chore saved"
+                                          : "Please try again later"));
+                                  Scaffold.of(context).showSnackBar(snackBar);
                                   break;
 
                                 case 'delete':

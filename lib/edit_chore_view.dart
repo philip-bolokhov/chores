@@ -32,7 +32,6 @@ class EditChoreViewState extends State<EditChoreView> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            print("navigating back");
             Navigator.pop(context);
           },
         ),

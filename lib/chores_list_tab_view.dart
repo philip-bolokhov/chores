@@ -106,6 +106,7 @@ class _ChoresListTabViewState extends State<ChoresListTabView> {
                                       value);
                               switch (value) {
                                 case 'edit':
+                                  // AAAA — refactor this into a separate function which can be re-used for creating a new chore
                                   var result = await Navigator.pushNamed(
                                       context, EditChoreViewRoute,
                                       arguments: {

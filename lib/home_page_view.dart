@@ -92,7 +92,7 @@ class _HomePageViewState extends State<HomePageView> {
                 },
               );
             },
-            buttonTitle: 'Apply',
+            buttonTitle: 'Complete',
             buttonFunction: _applySelected,
           ),
           ChoresListTabView(

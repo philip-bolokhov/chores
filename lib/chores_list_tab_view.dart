@@ -169,7 +169,7 @@ class ChoresMainButton extends StatelessWidget {
             ],
           ),
         ),
-        width: 90,
+        width: 100,
         padding: const EdgeInsets.all(10.0),
         child: Center(child: Text(_title, style: TextStyle(fontSize: 14))),
       ),

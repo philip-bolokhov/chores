@@ -18,19 +18,15 @@ class ChoreCheckedData {
 class ChoresListTabView extends StatefulWidget {
   final CollectionReference _choresCollection;
   final List<ChoreCheckedData> _choresChecked;
-  final Function _addButtonBuilder;
+  final bool _addButton;
   final String _buttonTitle;
   final Function _buttonFunction;
 
   ChoresListTabView(
-      {choresCollection,
-      choresChecked,
-      Function addButtonBuilder,
-      buttonTitle,
-      buttonFunction})
+      {choresCollection, choresChecked, addButton, buttonTitle, buttonFunction})
       : _choresCollection = choresCollection,
         _choresChecked = choresChecked,
-        _addButtonBuilder = addButtonBuilder,
+        _addButton = addButton,
         _buttonTitle = buttonTitle,
         _buttonFunction = buttonFunction;
 
@@ -108,25 +104,11 @@ class _ChoresListTabViewState extends State<ChoresListTabView> {
                                 case 'edit':
                                   _editChore(context,
                                       widget._choresChecked[documentEntry.key]);
-                                  // AAAA — TODO: refactor this into a separate function which can be re-used for creating a new chore
-                                  // var result = await Navigator.pushNamed(
-                                  //     context, EditChoreViewRoute,
-                                  //     arguments: {
-                                  //       'data': widget
-                                  //           ._choresChecked[documentEntry.key],
-                                  //       'reference': widget._choresCollection,
-                                  //     });
-                                  // if (result == "cancel") {
-                                  //   break;
-                                  // }
-                                  // final snackBar = SnackBar(
-                                  //     content: Text(result == "success"
-                                  //         ? "Chore saved"
-                                  //         : "Please try again later"));
-                                  // Scaffold.of(context).showSnackBar(snackBar);
                                   break;
 
                                 case 'delete':
+                                  _deleteChore(context,
+                                      widget._choresChecked[documentEntry.key]);
                                   break;
 
                                 default:
@@ -143,9 +125,16 @@ class _ChoresListTabViewState extends State<ChoresListTabView> {
                 }
               },
             ),
-            if (widget._addButtonBuilder != null) ...[
+            if (widget._addButton) ...[
               SizedBox(height: 20),
-              widget._addButtonBuilder(),
+              FloatingActionButton(
+                tooltip: "Add new chore",
+                child: Icon(Icons.add),
+                onPressed: () {
+                  print("Add new chore pressed");
+                  _editChore(context, null);
+                },
+              ),
             ]
           ],
         ),
@@ -157,7 +146,7 @@ class _ChoresListTabViewState extends State<ChoresListTabView> {
   }
 
   ///
-  /// Edit a chore or create a new chore
+  /// Edit a chore or create a new chore if chore is null
   ///
   void _editChore(BuildContext context, ChoreCheckedData chore) async {
     var result =
@@ -171,6 +160,20 @@ class _ChoresListTabViewState extends State<ChoresListTabView> {
     final snackBar = SnackBar(
         content: Text(
             result == "success" ? "Chore saved" : "Please try again later"));
+    Scaffold.of(context).showSnackBar(snackBar);
+  }
+
+  ///
+  /// Delete a chore
+  ///
+  void _deleteChore(BuildContext context, ChoreCheckedData chore) async {
+    try {
+      await widget._choresCollection.document(chore.documentID).delete();
+    } catch (e) {
+      final snackBar = SnackBar(content: Text('Something went wrong'));
+      Scaffold.of(context).showSnackBar(snackBar);
+    }
+    final snackBar = SnackBar(content: Text('Chore deleted'));
     Scaffold.of(context).showSnackBar(snackBar);
   }
 }

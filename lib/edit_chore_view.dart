@@ -12,7 +12,8 @@ class EditChoreView extends StatefulWidget {
 
   @override
   EditChoreViewState createState() => EditChoreViewState(
-      initialTitle: chore.title, initialDescription: ""); // AAAA
+      initialTitle: chore?.title ?? "",
+      initialDescription: ""); // AAAA — implement description
 }
 
 class EditChoreViewState extends State<EditChoreView> {
@@ -38,7 +39,7 @@ class EditChoreViewState extends State<EditChoreView> {
             Navigator.pop(context);
           },
         ),
-        title: Text('Edit chore details'),
+        title: Text(widget.chore != null ? 'Edit chore details' : 'New chore'),
       ),
       body: Builder(
         builder: (innerContext) => Container(
@@ -78,12 +79,15 @@ class EditChoreViewState extends State<EditChoreView> {
                     child: Text('Save'),
                     onPressed: () async {
                       try {
-                        await widget._collectionRef
-                            .document(widget.chore.documentID)
-                            .setData({
+                        var dataToSave = {
                           'title': titleController.text,
                           'description': descriptionController.text,
-                        }, merge: true);
+                        };
+                        await (widget.chore != null
+                            ? widget._collectionRef
+                                .document(widget.chore.documentID)
+                                .setData(dataToSave, merge: true)
+                            : widget._collectionRef.add(dataToSave));
                       } catch (e) {
                         final snackBar =
                             SnackBar(content: Text("Something went wrong"));

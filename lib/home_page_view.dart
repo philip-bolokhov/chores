@@ -83,15 +83,7 @@ class _HomePageViewState extends State<HomePageView> {
           ChoresListTabView(
             choresCollection: _openChoresRef,
             choresChecked: _openChoresChecked,
-            addButtonBuilder: () {
-              return FloatingActionButton(
-                tooltip: "Add new chore",
-                child: Icon(Icons.add),
-                onPressed: () {
-                  print("Add new chore pressed");
-                },
-              );
-            },
+            addButton: true,
             buttonTitle: 'Complete',
             buttonFunction: _applySelected,
           ),

@@ -11,21 +11,24 @@ class EditChoreView extends StatefulWidget {
         _collectionRef = choreData['reference'];
 
   @override
-  EditChoreViewState createState() => EditChoreViewState();
+  EditChoreViewState createState() => EditChoreViewState(
+      initialTitle: chore.title, initialDescription: ""); // AAAA
 }
 
 class EditChoreViewState extends State<EditChoreView> {
   final _formKey = GlobalKey<FormState>();
 
-  // Chore title
-  String _title;
+  final String initialTitle;
+  final String initialDescription;
 
-  // Chore description
-  String _description;
+  EditChoreViewState({this.initialTitle, this.initialDescription});
 
   @override
   Widget build(BuildContext context) {
-    _title = widget.chore.title;
+    TextEditingController titleController =
+        new TextEditingController(text: initialTitle);
+    TextEditingController descriptionController =
+        new TextEditingController(text: initialDescription);
 
     return Scaffold(
       appBar: AppBar(
@@ -49,28 +52,19 @@ class EditChoreViewState extends State<EditChoreView> {
                     children: [
                       SizedBox(height: 20),
                       TextFormField(
-                        initialValue: _title,
+                        controller: titleController,
                         decoration: InputDecoration(
                           labelText: 'Title',
                         ),
-                        onChanged: (value) {
-                          setState(() {
-                            _title = value;
-                          });
-                        },
                       ),
                       SizedBox(height: 20),
                       TextFormField(
+                        controller: descriptionController,
                         minLines: 2,
                         maxLines: 3,
                         decoration: InputDecoration(
                           labelText: 'Description',
                         ),
-                        onChanged: (value) {
-                          setState(() {
-                            _description = value;
-                          });
-                        },
                       ),
                     ],
                   ),
@@ -87,8 +81,8 @@ class EditChoreViewState extends State<EditChoreView> {
                         await widget._collectionRef
                             .document(widget.chore.documentID)
                             .setData({
-                          'title': _title,
-                          'description': _description,
+                          'title': titleController.text,
+                          'description': descriptionController.text,
                         }, merge: true);
                       } catch (e) {
                         final snackBar =
@@ -97,7 +91,7 @@ class EditChoreViewState extends State<EditChoreView> {
                         return;
                       }
                       print(
-                          "Got title = '$_title', description = '$_description'");
+                          "Got title = '${titleController.text}', description = '${descriptionController.text}'");
                       Navigator.pop(context, "success");
                     },
                   ),

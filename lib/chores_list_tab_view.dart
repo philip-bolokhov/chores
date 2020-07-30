@@ -106,22 +106,24 @@ class _ChoresListTabViewState extends State<ChoresListTabView> {
                                       value);
                               switch (value) {
                                 case 'edit':
-                                  // AAAA — refactor this into a separate function which can be re-used for creating a new chore
-                                  var result = await Navigator.pushNamed(
-                                      context, EditChoreViewRoute,
-                                      arguments: {
-                                        'data': widget
-                                            ._choresChecked[documentEntry.key],
-                                        'reference': widget._choresCollection,
-                                      });
-                                  if (result == "cancel") {
-                                    break;
-                                  }
-                                  final snackBar = SnackBar(
-                                      content: Text(result == "success"
-                                          ? "Chore saved"
-                                          : "Please try again later"));
-                                  Scaffold.of(context).showSnackBar(snackBar);
+                                  _editChore(context,
+                                      widget._choresChecked[documentEntry.key]);
+                                  // AAAA — TODO: refactor this into a separate function which can be re-used for creating a new chore
+                                  // var result = await Navigator.pushNamed(
+                                  //     context, EditChoreViewRoute,
+                                  //     arguments: {
+                                  //       'data': widget
+                                  //           ._choresChecked[documentEntry.key],
+                                  //       'reference': widget._choresCollection,
+                                  //     });
+                                  // if (result == "cancel") {
+                                  //   break;
+                                  // }
+                                  // final snackBar = SnackBar(
+                                  //     content: Text(result == "success"
+                                  //         ? "Chore saved"
+                                  //         : "Please try again later"));
+                                  // Scaffold.of(context).showSnackBar(snackBar);
                                   break;
 
                                 case 'delete':
@@ -152,6 +154,24 @@ class _ChoresListTabViewState extends State<ChoresListTabView> {
         const SizedBox(height: 15),
       ],
     );
+  }
+
+  ///
+  /// Edit a chore or create a new chore
+  ///
+  void _editChore(BuildContext context, ChoreCheckedData chore) async {
+    var result =
+        await Navigator.pushNamed(context, EditChoreViewRoute, arguments: {
+      'data': chore,
+      'reference': widget._choresCollection,
+    });
+    if (result == "cancel") {
+      return;
+    }
+    final snackBar = SnackBar(
+        content: Text(
+            result == "success" ? "Chore saved" : "Please try again later"));
+    Scaffold.of(context).showSnackBar(snackBar);
   }
 }
 

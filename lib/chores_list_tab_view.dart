@@ -23,7 +23,11 @@ class ChoresListTabView extends StatefulWidget {
   final Function _buttonFunction;
 
   ChoresListTabView(
-      {choresCollection, choresChecked, addButton, buttonTitle, buttonFunction})
+      {choresCollection,
+      choresChecked,
+      addButton = false,
+      buttonTitle,
+      buttonFunction})
       : _choresCollection = choresCollection,
         _choresChecked = choresChecked,
         _addButton = addButton,

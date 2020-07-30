@@ -2,18 +2,26 @@ import 'package:chores/chores_list_tab_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class EditChoreView extends StatefulWidget {
-  final ChoreCheckedData chore;
-  final CollectionReference _collectionRef;
+class EditChoreViewArguments {
+  Chore chore;
+  String documentID;
+  CollectionReference collectionReference;
 
-  EditChoreView(dynamic choreData)
-      : chore = choreData['data'],
-        _collectionRef = choreData['reference'];
+  EditChoreViewArguments(
+      {this.chore, this.documentID, this.collectionReference});
+}
+
+class EditChoreView extends StatefulWidget {
+  final Chore chore;
+  final String documentID;
+  final CollectionReference collectionReference;
+
+  EditChoreView({this.chore, this.documentID, this.collectionReference});
 
   @override
   EditChoreViewState createState() => EditChoreViewState(
       initialTitle: chore?.title ?? "",
-      initialDescription: ""); // AAAA — implement description
+      initialDescription: chore?.description ?? "");
 }
 
 class EditChoreViewState extends State<EditChoreView> {
@@ -84,10 +92,10 @@ class EditChoreViewState extends State<EditChoreView> {
                           'description': descriptionController.text,
                         };
                         await (widget.chore != null
-                            ? widget._collectionRef
-                                .document(widget.chore.documentID)
+                            ? widget.collectionReference
+                                .document(widget.documentID)
                                 .setData(dataToSave, merge: true)
-                            : widget._collectionRef.add(dataToSave));
+                            : widget.collectionReference.add(dataToSave));
                       } catch (e) {
                         final snackBar =
                             SnackBar(content: Text("Something went wrong"));

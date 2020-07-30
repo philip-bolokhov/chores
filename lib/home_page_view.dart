@@ -15,11 +15,19 @@ class HomePageView extends StatefulWidget {
 
 class _HomePageViewState extends State<HomePageView> {
   var _openChoresChecked = new List<ChoreCheckedData>.generate(
-      100, (_) => new ChoreCheckedData("", "", false),
+      100,
+      (_) => new ChoreCheckedData(
+          documentID: "",
+          chore: new Chore(title: "", description: ""),
+          checked: false),
       growable: true); // AAAA 100 has to be changed
 
   var _completedChoresChecked = new List<ChoreCheckedData>.generate(
-      100, (_) => new ChoreCheckedData("", "", false),
+      100,
+      (_) => new ChoreCheckedData(
+          documentID: "",
+          chore: new Chore(title: "", description: ""),
+          checked: false),
       growable: true); // AAAA 100 has to be changed
 
   /*
@@ -33,7 +41,8 @@ class _HomePageViewState extends State<HomePageView> {
         .where((element) => element.checked)
         .forEach((element) async {
       await _completedChoresRef.add({
-        'title': element.title,
+        'title': element.chore.title,
+        'description': element.chore.description,
       });
       await _openChoresRef.document(element.documentID).delete();
     });
@@ -49,7 +58,7 @@ class _HomePageViewState extends State<HomePageView> {
         .where((element) => element.checked)
         .forEach((element) async {
       await _openChoresRef.add({
-        'title': element.title,
+        'title': element.chore.title,
       });
       await _completedChoresRef.document(element.documentID).delete();
     });

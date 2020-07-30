@@ -1,15 +1,25 @@
+import 'package:chores/edit_chore_view.dart';
 import 'package:chores/routing_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 ///
+/// Chore data as in the database
+///
+class Chore {
+  String title;
+  String description;
+  Chore({this.title, this.description});
+}
+
+///
 /// A structure used for rendering each list view tile in the list of chores
 ///
 class ChoreCheckedData {
+  Chore chore;
   String documentID;
-  String title;
   bool checked;
-  ChoreCheckedData(this.documentID, this.title, this.checked);
+  ChoreCheckedData({this.documentID, this.chore, this.checked});
 }
 
 ///
@@ -70,8 +80,11 @@ class _ChoresListTabViewState extends State<ChoresListTabView> {
                           .map((MapEntry<int, DocumentSnapshot> documentEntry) {
                         widget._choresChecked[documentEntry.key].documentID =
                             documentEntry.value.documentID;
-                        widget._choresChecked[documentEntry.key].title =
+                        widget._choresChecked[documentEntry.key].chore.title =
                             documentEntry.value['title'];
+                        widget._choresChecked[documentEntry.key].chore
+                            .description = documentEntry.value['description'];
+
                         return new CheckboxListTile(
                             title: new Text(documentEntry.value['title']),
                             value: widget
@@ -152,12 +165,14 @@ class _ChoresListTabViewState extends State<ChoresListTabView> {
   ///
   /// Edit a chore or create a new chore if chore is null
   ///
-  void _editChore(BuildContext context, ChoreCheckedData chore) async {
-    var result =
-        await Navigator.pushNamed(context, EditChoreViewRoute, arguments: {
-      'data': chore,
-      'reference': widget._choresCollection,
-    });
+  void _editChore(
+      BuildContext context, ChoreCheckedData choreCheckedData) async {
+    var result = await Navigator.pushNamed(context, EditChoreViewRoute,
+        arguments: EditChoreViewArguments(
+          chore: choreCheckedData?.chore,
+          documentID: choreCheckedData?.documentID ?? "",
+          collectionReference: widget._choresCollection,
+        ));
     if (result == "cancel") {
       return;
     }

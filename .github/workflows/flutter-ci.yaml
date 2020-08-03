@@ -24,6 +24,9 @@ jobs:
       with:
         channel: 'beta'
 
+      # Enable Flutter for web
+    - run: flutter config --enable-web
+
       # Get flutter dependencies
     - run: flutter pub get
 

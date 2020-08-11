@@ -39,87 +39,91 @@ class EditChoreViewState extends State<EditChoreView> {
     TextEditingController descriptionController =
         new TextEditingController(text: initialDescription);
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context, "cancel");
-          },
+    return WillPopScope(
+      onWillPop: _onBackButtonPressed,
+      child: Scaffold(
+        appBar: AppBar(
+          title:
+              Text(widget.chore != null ? 'Edit chore details' : 'New chore'),
         ),
-        title: Text(widget.chore != null ? 'Edit chore details' : 'New chore'),
-      ),
-      body: Builder(
-        builder: (innerContext) => Container(
-          padding: EdgeInsets.symmetric(horizontal: 40),
-          child: Column(
-            children: [
-              Expanded(
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      SizedBox(height: 20),
-                      TextFormField(
-                        controller: titleController,
-                        decoration: InputDecoration(
-                          labelText: 'Title',
+        body: Builder(
+          builder: (innerContext) => Container(
+            padding: EdgeInsets.symmetric(horizontal: 40),
+            child: Column(
+              children: [
+                Expanded(
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        SizedBox(height: 20),
+                        TextFormField(
+                          controller: titleController,
+                          decoration: InputDecoration(
+                            labelText: 'Title',
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 20),
-                      TextFormField(
-                        controller: descriptionController,
-                        minLines: 2,
-                        maxLines: 3,
-                        decoration: InputDecoration(
-                          labelText: 'Description',
+                        SizedBox(height: 20),
+                        TextFormField(
+                          controller: descriptionController,
+                          minLines: 2,
+                          maxLines: 3,
+                          decoration: InputDecoration(
+                            labelText: 'Description',
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  RaisedButton(
-                    child: Text('Save'),
-                    onPressed: () async {
-                      try {
-                        var dataToSave = {
-                          'title': titleController.text,
-                          'description': descriptionController.text,
-                        };
-                        await (widget.chore != null
-                            ? widget.collectionReference
-                                .document(widget.documentID)
-                                .setData(dataToSave, merge: true)
-                            : widget.collectionReference.add(dataToSave));
-                      } catch (e) {
-                        final snackBar =
-                            SnackBar(content: Text("Something went wrong"));
-                        Scaffold.of(innerContext).showSnackBar(snackBar);
-                        return;
-                      }
-                      print(
-                          "Got title = '${titleController.text}', description = '${descriptionController.text}'");
-                      Navigator.pop(context, "success");
-                    },
-                  ),
-                  FlatButton(
-                    child: Text('Cancel'),
-                    onPressed: () {
-                      Navigator.pop(context, "cancel");
-                    },
-                  )
-                ],
-              ),
-              SizedBox(height: 20),
-            ],
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    RaisedButton(
+                      child: Text('Save'),
+                      onPressed: () async {
+                        try {
+                          var dataToSave = {
+                            'title': titleController.text,
+                            'description': descriptionController.text,
+                          };
+                          await (widget.chore != null
+                              ? widget.collectionReference
+                                  .document(widget.documentID)
+                                  .setData(dataToSave, merge: true)
+                              : widget.collectionReference.add(dataToSave));
+                        } catch (e) {
+                          final snackBar =
+                              SnackBar(content: Text("Something went wrong"));
+                          Scaffold.of(innerContext).showSnackBar(snackBar);
+                          return;
+                        }
+                        print(
+                            "Got title = '${titleController.text}', description = '${descriptionController.text}'");
+                        Navigator.pop(context, "success");
+                      },
+                    ),
+                    FlatButton(
+                      child: Text('Cancel'),
+                      onPressed: () {
+                        Navigator.pop(context, "cancel");
+                      },
+                    )
+                  ],
+                ),
+                SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  Future<bool> _onBackButtonPressed() {
+    Navigator.pop(context, "cancel");
+    // "false" since we have handled the routing manually
+    return new Future<bool>.value(false);
   }
 }

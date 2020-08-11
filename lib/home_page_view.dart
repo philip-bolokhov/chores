@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'chore.dart';
 import 'chores_list_tab_view.dart';
 
 class HomePageView extends StatefulWidget {
@@ -37,38 +38,30 @@ class _HomePageViewState extends State<HomePageView> {
   var _openChoresRef = Firestore.instance.collection('openChores');
   var _completedChoresRef = Firestore.instance.collection('completedChores');
 
-  void _applySelected() {
-    _openChoresChecked
-        .where((element) => element.checked)
-        .forEach((element) async {
-      await _completedChoresRef.add({
-        'title': element.chore.title,
-        'description': element.chore.description,
-      });
-      await _openChoresRef.document(element.documentID).delete();
+  void _moveChore(
+      List<ChoreCheckedData> fromList,
+      List<ChoreCheckedData> toList,
+      CollectionReference fromCollection,
+      CollectionReference toCollection) {
+    fromList.where((element) => element.checked).forEach((element) async {
+      await element.chore.add(toCollection);
+      await element.chore.delete(fromCollection.document(element.documentID));
     });
 
     // Unselect all selected chores
-    _openChoresChecked.forEach((element) {
+    fromList.forEach((element) {
       element.checked = false;
     });
   }
 
-  void _restoreSelected() {
-    _completedChoresChecked
-        .where((element) => element.checked)
-        .forEach((element) async {
-      await _openChoresRef.add({
-        'title': element.chore.title,
-        'description': element.chore.description,
-      });
-      await _completedChoresRef.document(element.documentID).delete();
-    });
+  void _applySelected() {
+    _moveChore(_openChoresChecked, _completedChoresChecked, _openChoresRef,
+        _completedChoresRef);
+  }
 
-    // Unselect all selected chores
-    _completedChoresChecked.forEach((element) {
-      element.checked = false;
-    });
+  void _restoreSelected() {
+    _moveChore(_completedChoresChecked, _openChoresChecked, _completedChoresRef,
+        _openChoresRef);
   }
 
   @override

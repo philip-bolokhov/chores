@@ -2,6 +2,8 @@ import 'package:chores/chores_list_tab_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import 'chore.dart';
+
 class EditChoreViewArguments {
   Chore chore;
   String documentID;

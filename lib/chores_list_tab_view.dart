@@ -3,14 +3,7 @@ import 'package:chores/routing_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-///
-/// Chore data as in the database
-///
-class Chore {
-  String title;
-  String description;
-  Chore({this.title, this.description});
-}
+import 'chore.dart';
 
 ///
 /// A structure used for rendering each list view tile in the list of chores

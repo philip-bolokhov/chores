@@ -12,7 +12,17 @@ class ChoreCheckedData {
   Chore chore;
   String documentID;
   bool checked;
+
   ChoreCheckedData({this.documentID, this.chore, this.checked});
+
+  Future<DocumentReference> addToCollection(
+      CollectionReference collectionReference) {
+    return chore.add(collectionReference);
+  }
+
+  Future<void> deleteFromCollection(CollectionReference collectionReference) {
+    return chore.delete(collectionReference.document(documentID));
+  }
 }
 
 ///

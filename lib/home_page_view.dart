@@ -44,8 +44,8 @@ class _HomePageViewState extends State<HomePageView> {
       CollectionReference fromCollection,
       CollectionReference toCollection) {
     fromList.where((element) => element.checked).forEach((element) async {
-      await element.chore.add(toCollection);
-      await element.chore.delete(fromCollection.document(element.documentID));
+      await element.addToCollection(toCollection);
+      await element.deleteFromCollection(fromCollection);
     });
 
     // Unselect all selected chores

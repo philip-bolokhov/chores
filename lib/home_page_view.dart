@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'chores_list_tab_view.dart';
@@ -77,33 +78,45 @@ class _HomePageViewState extends State<HomePageView> {
     return DefaultTabController(
       // The number of tabs / content sections to display.
       length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          bottom: TabBar(tabs: [
-            Tab(text: "Tasks"),
-            Tab(text: "Completed Tasks"),
-          ]),
-          // Here we take the value from the HomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-          title: Text('Chores'),
-          centerTitle: true,
+      child: Stack(fit: StackFit.expand, children: [
+        Image(
+            fit: BoxFit.cover, image: AssetImage('assets/images/kitchen.jpg')),
+        BackdropFilter(
+          filter: ImageFilter.blur(
+            sigmaX: 2.0,
+            sigmaY: 2.0,
+          ),
+          child: Scaffold(
+            appBar: AppBar(
+              backgroundColor: Color.fromRGBO(0x21, 0x96, 0xF3, 0.6),
+              bottom: TabBar(tabs: [
+                Tab(text: "Tasks"),
+                Tab(text: "Completed Tasks"),
+              ]),
+              // Here we take the value from the HomePage object that was created by
+              // the App.build method, and use it to set our appbar title.
+              title: Text('Chores'),
+              centerTitle: true,
+            ),
+            backgroundColor: Color.fromARGB(200, 180, 180, 180),
+            body: TabBarView(children: [
+              ChoresListTabView(
+                choresCollection: _openChoresRef,
+                choresChecked: _openChoresChecked,
+                addButton: true,
+                buttonTitle: 'Complete',
+                buttonFunction: _applySelected,
+              ),
+              ChoresListTabView(
+                choresCollection: _completedChoresRef,
+                choresChecked: _completedChoresChecked,
+                buttonTitle: 'Restore',
+                buttonFunction: _restoreSelected,
+              ),
+            ]),
+          ),
         ),
-        body: TabBarView(children: [
-          ChoresListTabView(
-            choresCollection: _openChoresRef,
-            choresChecked: _openChoresChecked,
-            addButton: true,
-            buttonTitle: 'Complete',
-            buttonFunction: _applySelected,
-          ),
-          ChoresListTabView(
-            choresCollection: _completedChoresRef,
-            choresChecked: _completedChoresChecked,
-            buttonTitle: 'Restore',
-            buttonFunction: _restoreSelected,
-          ),
-        ]),
-      ),
+      ]),
     );
   }
 }

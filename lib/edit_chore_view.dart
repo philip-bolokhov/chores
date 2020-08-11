@@ -44,7 +44,7 @@ class EditChoreViewState extends State<EditChoreView> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context, "cancel");
           },
         ),
         title: Text(widget.chore != null ? 'Edit chore details' : 'New chore'),

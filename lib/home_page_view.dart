@@ -60,6 +60,7 @@ class _HomePageViewState extends State<HomePageView> {
         .forEach((element) async {
       await _openChoresRef.add({
         'title': element.chore.title,
+        'description': element.chore.description,
       });
       await _completedChoresRef.document(element.documentID).delete();
     });

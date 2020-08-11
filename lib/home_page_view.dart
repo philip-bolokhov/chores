@@ -83,8 +83,8 @@ class _HomePageViewState extends State<HomePageView> {
             fit: BoxFit.cover, image: AssetImage('assets/images/kitchen.jpg')),
         BackdropFilter(
           filter: ImageFilter.blur(
-            sigmaX: 2.0,
-            sigmaY: 2.0,
+            sigmaX: 3.0,
+            sigmaY: 3.0,
           ),
           child: Scaffold(
             appBar: AppBar(
@@ -98,7 +98,7 @@ class _HomePageViewState extends State<HomePageView> {
               title: Text('Chores'),
               centerTitle: true,
             ),
-            backgroundColor: Color.fromARGB(200, 180, 180, 180),
+            backgroundColor: Color.fromARGB(230, 200, 200, 200),
             body: TabBarView(children: [
               ChoresListTabView(
                 choresCollection: _openChoresRef,

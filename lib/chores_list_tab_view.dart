@@ -90,6 +90,8 @@ class _ChoresListTabViewState extends State<ChoresListTabView> {
 
                         return new CheckboxListTile(
                             title: new Text(documentEntry.value['title']),
+                            subtitle:
+                                new Text(documentEntry.value['description']),
                             value: widget
                                 ._choresChecked[documentEntry.key].checked,
                             secondary: PopupMenuButton<String>(

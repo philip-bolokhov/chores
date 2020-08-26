@@ -32,7 +32,7 @@ class ChoreChecked {
 }
 
 ///
-/// The main widget — the tab view with a button at the bottom
+/// The main widget — the tab view with an optional button at the bottom
 ///
 class ChoresListTabView extends StatefulWidget {
   final CollectionReference _choresCollection;

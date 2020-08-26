@@ -8,12 +8,18 @@ import 'chore.dart';
 ///
 /// A structure used for rendering each list view tile in the list of chores
 ///
-class ChoreCheckedData {
+class ChoreChecked {
   Chore chore;
   String documentID;
   bool checked;
 
-  ChoreCheckedData({this.documentID, this.chore, this.checked});
+  ChoreChecked({this.documentID, this.chore, this.checked});
+
+  ChoreChecked.fromSnapshot(DocumentSnapshot snap)
+      : chore = new Chore(
+            title: snap.data['title'], description: snap.data['description']),
+        documentID = snap.documentID,
+        checked = false;
 
   Future<DocumentReference> addToCollection(
       CollectionReference collectionReference) {
@@ -30,7 +36,7 @@ class ChoreCheckedData {
 ///
 class ChoresListTabView extends StatefulWidget {
   final CollectionReference _choresCollection;
-  final List<ChoreCheckedData> _choresChecked;
+  final List<ChoreChecked> _choresChecked;
   final bool _addButton;
   final String _buttonTitle;
   final Function _buttonFunction;
@@ -170,12 +176,11 @@ class _ChoresListTabViewState extends State<ChoresListTabView> {
   ///
   /// Edit a chore or create a new chore if chore is null
   ///
-  void _editChore(
-      BuildContext context, ChoreCheckedData choreCheckedData) async {
+  void _editChore(BuildContext context, ChoreChecked choreChecked) async {
     var result = await Navigator.pushNamed(context, EditChoreViewRoute,
         arguments: EditChoreViewArguments(
-          chore: choreCheckedData?.chore,
-          documentID: choreCheckedData?.documentID ?? "",
+          chore: choreChecked?.chore,
+          documentID: choreChecked?.documentID ?? "",
           collectionReference: widget._choresCollection,
         ));
     if (result == "cancel") {
@@ -190,7 +195,7 @@ class _ChoresListTabViewState extends State<ChoresListTabView> {
   ///
   /// Delete a chore
   ///
-  void _deleteChore(BuildContext context, ChoreCheckedData chore) async {
+  void _deleteChore(BuildContext context, ChoreChecked chore) async {
     try {
       await widget._choresCollection.document(chore.documentID).delete();
     } catch (e) {

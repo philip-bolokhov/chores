@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:ui';
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+
 import 'chore.dart';
 import 'chores_list_tab_view.dart';
 
@@ -16,17 +18,17 @@ class HomePageView extends StatefulWidget {
 }
 
 class _HomePageViewState extends State<HomePageView> {
-  var _openChoresChecked = new List<ChoreCheckedData>.generate(
+  var _openChoresChecked = new List<ChoreChecked>.generate(
       100,
-      (_) => new ChoreCheckedData(
+      (_) => new ChoreChecked(
           documentID: "",
           chore: new Chore(title: "", description: ""),
           checked: false),
       growable: true); // AAAA 100 has to be changed
 
-  var _completedChoresChecked = new List<ChoreCheckedData>.generate(
+  var _completedChoresChecked = new List<ChoreChecked>.generate(
       100,
-      (_) => new ChoreCheckedData(
+      (_) => new ChoreChecked(
           documentID: "",
           chore: new Chore(title: "", description: ""),
           checked: false),
@@ -38,11 +40,41 @@ class _HomePageViewState extends State<HomePageView> {
   var _openChoresRef = Firestore.instance.collection('openChores');
   var _completedChoresRef = Firestore.instance.collection('completedChores');
 
-  void _moveChore(
-      List<ChoreCheckedData> fromList,
-      List<ChoreCheckedData> toList,
-      CollectionReference fromCollection,
-      CollectionReference toCollection) {
+  var subscriptions = new List<StreamSubscription<QuerySnapshot>>();
+
+  var _openList = new List<ChoreChecked>();
+  var _completedList = new List<ChoreChecked>();
+
+  @protected
+  @mustCallSuper
+  initState() {
+    subscriptions.add(_subscribetoCollection(_openChoresRef, _openList));
+    subscriptions
+        .add(_subscribetoCollection(_completedChoresRef, _completedList));
+    super.initState();
+  }
+
+  @override
+  dispose() {
+    subscriptions.forEach((subscription) => subscription.cancel());
+    subscriptions.clear();
+    super.dispose();
+  }
+
+  // Subscribes to the collection snapshot to update a list
+  StreamSubscription<QuerySnapshot> _subscribetoCollection(
+      CollectionReference collectionReference, List<ChoreChecked> list) {
+    return collectionReference.snapshots().listen((event) {
+      if (list.length != 0) {
+        list.clear();
+      }
+      event.documents
+          .forEach((snap) => list.add(new ChoreChecked.fromSnapshot(snap)));
+    });
+  }
+
+  void _moveChore(List<ChoreChecked> fromList, List<ChoreChecked> toList,
+      CollectionReference fromCollection, CollectionReference toCollection) {
     fromList.where((element) => element.checked).forEach((element) async {
       await element.addToCollection(toCollection);
       await element.deleteFromCollection(fromCollection);

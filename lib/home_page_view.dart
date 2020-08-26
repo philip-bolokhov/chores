@@ -61,27 +61,43 @@ class _HomePageViewState extends State<HomePageView> {
   }
 
   // Moves all checked chores from one list to another
-  void _moveChore(List<ChoreChecked> fromList, List<ChoreChecked> toList,
-      CollectionReference fromCollection, CollectionReference toCollection) {
-    fromList.where((element) => element.checked).forEach((element) async {
-      await element.addToCollection(toCollection);
-      await element.deleteFromCollection(fromCollection);
-    });
+  Future<void> _moveChore(
+      List<ChoreChecked> fromList,
+      List<ChoreChecked> toList,
+      CollectionReference fromCollection,
+      CollectionReference toCollection) async {
+    await Future.wait(
+        fromList.where((element) => element.checked).map((element) async {
+      // Check that the document still exists
+      var snapFrom = await fromCollection.document(element.documentID).get();
+      if (!snapFrom.exists) {
+        return;
+      }
+      // Check that the document does not exist on the target collection
+      var snapTo = await toCollection.document(element.documentID).get();
+      if (snapTo.exists) {
+        return;
+      }
+      var batch = Firestore.instance.batch();
+      element.addToCollection(batch, toCollection);
+      element.deleteFromCollection(batch, fromCollection);
+      batch.commit();
+    }));
 
-    // Unselect all selected chores
+    // Unselect all chores
     fromList.forEach((element) {
       element.checked = false;
     });
   }
 
-  void _applySelected() {
-    _moveChore(_openChoresChecked, _completedChoresChecked, _openChoresRef,
-        _completedChoresRef);
+  Future<void> _applySelected() async {
+    return await _moveChore(_openChoresChecked, _completedChoresChecked,
+        _openChoresRef, _completedChoresRef);
   }
 
-  void _restoreSelected() {
-    _moveChore(_completedChoresChecked, _openChoresChecked, _completedChoresRef,
-        _openChoresRef);
+  Future<void> _restoreSelected() async {
+    return await _moveChore(_completedChoresChecked, _openChoresChecked,
+        _completedChoresRef, _openChoresRef);
   }
 
   @override

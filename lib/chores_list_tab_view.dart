@@ -21,13 +21,17 @@ class ChoreChecked {
         documentID = snap.documentID,
         checked = false;
 
-  Future<DocumentReference> addToCollection(
-      CollectionReference collectionReference) {
-    return chore.add(collectionReference);
+  void addToCollection(
+      WriteBatch batch, CollectionReference collectionReference) {
+    return chore.add(
+        batch,
+        collectionReference
+            .document(documentID)); // This document should not exist
   }
 
-  Future<void> deleteFromCollection(CollectionReference collectionReference) {
-    return chore.delete(collectionReference.document(documentID));
+  void deleteFromCollection(
+      WriteBatch batch, CollectionReference collectionReference) {
+    return chore.delete(batch, collectionReference.document(documentID));
   }
 }
 

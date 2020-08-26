@@ -9,14 +9,12 @@ class Chore {
 
   Chore({this.title, this.description});
 
-  Future<DocumentReference> add(CollectionReference collectionReference) {
-    return collectionReference.add({
-      'title': title,
-      'description': description,
-    });
+  void add(WriteBatch batch, DocumentReference documentReference) {
+    return batch.setData(
+        documentReference, {'title': title, 'description': description});
   }
 
-  Future<void> delete(DocumentReference documentReference) {
-    return documentReference.delete();
+  void delete(WriteBatch batch, DocumentReference documentReference) {
+    return batch.delete(documentReference);
   }
 }

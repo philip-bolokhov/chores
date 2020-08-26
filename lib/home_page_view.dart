@@ -60,6 +60,7 @@ class _HomePageViewState extends State<HomePageView> {
     });
   }
 
+  // Moves all checked chores from one list to another
   void _moveChore(List<ChoreChecked> fromList, List<ChoreChecked> toList,
       CollectionReference fromCollection, CollectionReference toCollection) {
     fromList.where((element) => element.checked).forEach((element) async {

@@ -66,6 +66,7 @@ class _HomePageViewState extends State<HomePageView> {
       List<ChoreChecked> toList,
       CollectionReference fromCollection,
       CollectionReference toCollection) async {
+    var batch = Firestore.instance.batch();
     await Future.wait(
         fromList.where((element) => element.checked).map((element) async {
       // Check that the document still exists
@@ -78,11 +79,10 @@ class _HomePageViewState extends State<HomePageView> {
       if (snapTo.exists) {
         return;
       }
-      var batch = Firestore.instance.batch();
       element.addToCollection(batch, toCollection);
       element.deleteFromCollection(batch, fromCollection);
-      batch.commit();
     }));
+    batch.commit();
 
     // Unselect all chores
     fromList.forEach((element) {

@@ -18,22 +18,6 @@ class HomePageView extends StatefulWidget {
 }
 
 class _HomePageViewState extends State<HomePageView> {
-  var _openChoresChecked = new List<ChoreChecked>.generate(
-      100,
-      (_) => new ChoreChecked(
-          documentID: "",
-          chore: new Chore(title: "", description: ""),
-          checked: false),
-      growable: true); // AAAA 100 has to be changed
-
-  var _completedChoresChecked = new List<ChoreChecked>.generate(
-      100,
-      (_) => new ChoreChecked(
-          documentID: "",
-          chore: new Chore(title: "", description: ""),
-          checked: false),
-      growable: true); // AAAA 100 has to be changed
-
   /*
    * Firestore collection references to the collections of chores
    */
@@ -42,15 +26,16 @@ class _HomePageViewState extends State<HomePageView> {
 
   var subscriptions = new List<StreamSubscription<QuerySnapshot>>();
 
-  var _openList = new List<ChoreChecked>();
-  var _completedList = new List<ChoreChecked>();
+  var _openChoresChecked = new List<ChoreChecked>();
+  var _completedChoresChecked = new List<ChoreChecked>();
 
   @protected
   @mustCallSuper
   initState() {
-    subscriptions.add(_subscribetoCollection(_openChoresRef, _openList));
     subscriptions
-        .add(_subscribetoCollection(_completedChoresRef, _completedList));
+        .add(_subscribetoCollection(_openChoresRef, _openChoresChecked));
+    subscriptions.add(
+        _subscribetoCollection(_completedChoresRef, _completedChoresChecked));
     super.initState();
   }
 
@@ -68,8 +53,10 @@ class _HomePageViewState extends State<HomePageView> {
       if (list.length != 0) {
         list.clear();
       }
-      event.documents
-          .forEach((snap) => list.add(new ChoreChecked.fromSnapshot(snap)));
+      setState(() {
+        event.documents
+            .forEach((snap) => list.add(new ChoreChecked.fromSnapshot(snap)));
+      });
     });
   }
 

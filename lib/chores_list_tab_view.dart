@@ -67,99 +67,14 @@ class _ChoresListTabViewState extends State<ChoresListTabView> {
         Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            StreamBuilder<QuerySnapshot>(
-              stream: widget._choresCollection.snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.hasError)
-                  return new Text('Error: ${snapshot.error}');
-                switch (snapshot.connectionState) {
-                  case ConnectionState.waiting:
-                    return Center(
-                        child: SizedBox(
-                            width: 60,
-                            height: 60,
-                            child: CircularProgressIndicator()));
-                  default:
-                    return new ListView(
-                      shrinkWrap: true,
-                      children: snapshot.data.documents
-                          .asMap()
-                          .entries
-                          .map((MapEntry<int, DocumentSnapshot> documentEntry) {
-                        widget._choresChecked[documentEntry.key].documentID =
-                            documentEntry.value.documentID;
-                        widget._choresChecked[documentEntry.key].chore.title =
-                            documentEntry.value['title'];
-                        widget._choresChecked[documentEntry.key].chore
-                            .description = documentEntry.value['description'];
-
-                        return new CheckboxListTile(
-                            title: new Text(documentEntry.value['title']),
-                            subtitle:
-                                new Text(documentEntry.value['description']),
-                            value: widget
-                                ._choresChecked[documentEntry.key].checked,
-                            secondary: PopupMenuButton<String>(
-                                itemBuilder: (BuildContext context) {
-                              return [
-                                PopupMenuItem<String>(
-                                  value: 'edit',
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.create),
-                                      SizedBox(width: 20),
-                                      Text('Edit'),
-                                    ],
-                                  ),
-                                ),
-                                PopupMenuItem<String>(
-                                  value: 'delete',
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.delete),
-                                      SizedBox(width: 20),
-                                      Text('Delete'),
-                                    ],
-                                  ),
-                                ),
-                              ];
-                            }, onSelected: (value) async {
-                              print(
-                                  "Selected item '${documentEntry.value.data['title']}' → " +
-                                      value);
-                              switch (value) {
-                                case 'edit':
-                                  _editChore(context,
-                                      widget._choresChecked[documentEntry.key]);
-                                  break;
-
-                                case 'delete':
-                                  _deleteChore(context,
-                                      widget._choresChecked[documentEntry.key]);
-                                  break;
-
-                                default:
-                              }
-                            }),
-                            onChanged: (bool newValue) {
-                              setState(() {
-                                widget._choresChecked[documentEntry.key]
-                                    .checked = newValue;
-                              });
-                            });
-                      }).toList(),
-                    );
-                }
-              },
-            ),
+            _buildChoreList(),
             if (widget._addButton) ...[
               SizedBox(height: 20),
               FloatingActionButton(
                 tooltip: "Add new chore",
                 child: Icon(Icons.add),
                 onPressed: () {
-                  print("Add new chore pressed");
+                  print("Add new chore pressed"); // AAAA
                   _editChore(context, null);
                 },
               ),
@@ -170,6 +85,63 @@ class _ChoresListTabViewState extends State<ChoresListTabView> {
         ChoresMainButton(widget._buttonTitle, widget._buttonFunction),
         const SizedBox(height: 15),
       ],
+    );
+  }
+
+  Widget _buildChoreList() {
+    // if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
+
+    return new ListView(
+      shrinkWrap: true,
+      children: widget._choresChecked.map((chore) {
+        return new CheckboxListTile(
+            title: new Text(chore.chore.title),
+            subtitle: new Text(chore.chore.description),
+            value: chore.checked,
+            secondary:
+                PopupMenuButton<String>(itemBuilder: (BuildContext context) {
+              return [
+                PopupMenuItem<String>(
+                  value: 'edit',
+                  child: Row(
+                    children: [
+                      Icon(Icons.create),
+                      SizedBox(width: 20),
+                      Text('Edit'),
+                    ],
+                  ),
+                ),
+                PopupMenuItem<String>(
+                  value: 'delete',
+                  child: Row(
+                    children: [
+                      Icon(Icons.delete),
+                      SizedBox(width: 20),
+                      Text('Delete'),
+                    ],
+                  ),
+                ),
+              ];
+            }, onSelected: (value) async {
+              print("Selected item '${chore.chore.title}' → " + value);
+              switch (value) {
+                case 'edit':
+                  _editChore(context, chore);
+                  break;
+
+                case 'delete':
+                  _deleteChore(context, chore);
+                  break;
+
+                default:
+              }
+            }),
+            onChanged: (bool newValue) {
+              setState(() {
+                chore.checked = newValue;
+              });
+            });
+      }).toList(),
     );
   }
 

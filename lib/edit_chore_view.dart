@@ -100,8 +100,6 @@ class EditChoreViewState extends State<EditChoreView> {
                           Scaffold.of(innerContext).showSnackBar(snackBar);
                           return;
                         }
-                        print(
-                            "Got title = '${titleController.text}', description = '${descriptionController.text}'");
                         Navigator.pop(context, "success");
                       },
                     ),

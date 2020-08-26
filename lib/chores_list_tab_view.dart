@@ -78,7 +78,6 @@ class _ChoresListTabViewState extends State<ChoresListTabView> {
                 tooltip: "Add new chore",
                 child: Icon(Icons.add),
                 onPressed: () {
-                  print("Add new chore pressed"); // AAAA
                   _editChore(context, null);
                 },
               ),
@@ -127,7 +126,6 @@ class _ChoresListTabViewState extends State<ChoresListTabView> {
                 ),
               ];
             }, onSelected: (value) async {
-              print("Selected item '${chore.chore.title}' → " + value);
               switch (value) {
                 case 'edit':
                   _editChore(context, chore);

@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import 'chore.dart';
 import 'chores_list_tab_view.dart';
 
 class HomePageView extends StatefulWidget {

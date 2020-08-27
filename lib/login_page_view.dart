@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:chores/routing_constants.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class LoginPageView extends StatelessWidget {
   final _logoColor = Color(0xff00bfff);
@@ -43,6 +44,11 @@ class LoginPageView extends StatelessWidget {
                 Expanded(
                   child: Column(
                     children: [
+                      Image(
+                        width: 160.75,
+                        height: 91,
+                        image: AssetImage("assets/icons/logo.png"),
+                      ),
                       Spacer(),
                       ButtonTheme(
                         minWidth: 280,

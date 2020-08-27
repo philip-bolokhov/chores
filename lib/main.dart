@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       onGenerateRoute: generateRoutes,
-      initialRoute: HomePageViewRoute,
+      initialRoute: LoginPageViewRoute,
     );
   }
 

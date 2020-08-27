@@ -1,4 +1,6 @@
 import 'dart:ui';
+import 'package:chores/routing_constants.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 
 class LoginPageView extends StatelessWidget {
@@ -25,7 +27,7 @@ class LoginPageView extends StatelessWidget {
                   child: Center(
                     child: Text(
                       'Chores',
-                      style: TextStyle(
+                      style: GoogleFonts.fugazOne(
                           color: _logoColor,
                           fontSize: 80,
                           fontWeight: FontWeight.w500,
@@ -51,7 +53,8 @@ class LoginPageView extends StatelessWidget {
                             style: TextStyle(fontSize: 20),
                           ),
                           color: _googleBackgroundColor,
-                          onPressed: () {},
+                          onPressed: () =>
+                              Navigator.pushNamed(context, HomePageViewRoute),
                           shape: new RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(30.0)),
                           textColor: Colors.white,

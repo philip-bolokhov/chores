@@ -49,22 +49,7 @@ class LoginPageView extends StatelessWidget {
                         image: AssetImage("assets/icons/logo.png"),
                       ),
                       Spacer(),
-                      ButtonTheme(
-                        minWidth: 280,
-                        height: 60,
-                        child: RaisedButton(
-                          child: Text(
-                            'Sign in with Google',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          color: _googleBackgroundColor,
-                          onPressed: () =>
-                              Navigator.pushNamed(context, HomePageViewRoute),
-                          shape: new RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(30.0)),
-                          textColor: Colors.white,
-                        ),
-                      ),
+                      _signInButton(context),
                       SizedBox(height: 20),
                     ],
                   ),
@@ -74,6 +59,51 @@ class LoginPageView extends StatelessWidget {
           ),
         ),
       ]),
+    );
+  }
+
+  // Draw the 'Sign in with Google' button
+  Widget _signInButton(BuildContext context) {
+    const double letterGSize = 28;
+    const double circleSize = 54;
+    return ButtonTheme(
+      minWidth: 280,
+      height: 60,
+      child: RaisedButton(
+        padding: EdgeInsets.symmetric(horizontal: 3),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                      maxWidth: circleSize, maxHeight: circleSize),
+                  child: Container(
+                    padding: EdgeInsets.all((circleSize - letterGSize) / 2.0),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                    ),
+                    child: Image.asset("assets/icons/google-logo.png"),
+                  ),
+                ),
+                Text(
+                  'Sign in with Google',
+                  style: TextStyle(fontSize: 20),
+                ),
+              ],
+            ),
+          ],
+        ),
+        color: _googleBackgroundColor,
+        onPressed: () => Navigator.pushNamed(context, HomePageViewRoute),
+        shape: new RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(30.0)),
+        textColor: Colors.white,
+      ),
     );
   }
 }

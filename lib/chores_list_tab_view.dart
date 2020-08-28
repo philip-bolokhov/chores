@@ -17,21 +17,21 @@ class ChoreChecked {
 
   ChoreChecked.fromSnapshot(DocumentSnapshot snap)
       : chore = new Chore(
-            title: snap.data['title'], description: snap.data['description']),
-        documentID = snap.documentID,
+          title: snap.data()['title'],
+          description: snap.data()['description'],
+        ),
+        documentID = snap.id,
         checked = false;
 
   void addToCollection(
       WriteBatch batch, CollectionReference collectionReference) {
-    return chore.add(
-        batch,
-        collectionReference
-            .document(documentID)); // This document should not exist
+    return chore.add(batch,
+        collectionReference.doc(documentID)); // This document should not exist
   }
 
   void deleteFromCollection(
       WriteBatch batch, CollectionReference collectionReference) {
-    return chore.delete(batch, collectionReference.document(documentID));
+    return chore.delete(batch, collectionReference.doc(documentID));
   }
 }
 
@@ -171,7 +171,7 @@ class _ChoresListTabViewState extends State<ChoresListTabView> {
   ///
   void _deleteChore(BuildContext context, ChoreChecked chore) async {
     try {
-      await widget._choresCollection.document(chore.documentID).delete();
+      await widget._choresCollection.doc(chore.documentID).delete();
     } catch (e) {
       final snackBar = SnackBar(content: Text('Something went wrong'));
       Scaffold.of(context).showSnackBar(snackBar);

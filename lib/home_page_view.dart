@@ -20,8 +20,9 @@ class _HomePageViewState extends State<HomePageView> {
   /*
    * Firestore collection references to the collections of chores
    */
-  var _openChoresRef = Firestore.instance.collection('openChores');
-  var _completedChoresRef = Firestore.instance.collection('completedChores');
+  var _openChoresRef = FirebaseFirestore.instance.collection('openChores');
+  var _completedChoresRef =
+      FirebaseFirestore.instance.collection('completedChores');
 
   var subscriptions = new List<StreamSubscription<QuerySnapshot>>();
 
@@ -53,7 +54,7 @@ class _HomePageViewState extends State<HomePageView> {
         list.clear();
       }
       setState(() {
-        event.documents
+        event.docs
             .forEach((snap) => list.add(new ChoreChecked.fromSnapshot(snap)));
       });
     });
@@ -65,16 +66,16 @@ class _HomePageViewState extends State<HomePageView> {
       List<ChoreChecked> toList,
       CollectionReference fromCollection,
       CollectionReference toCollection) async {
-    var batch = Firestore.instance.batch();
+    var batch = FirebaseFirestore.instance.batch();
     await Future.wait(
         fromList.where((element) => element.checked).map((element) async {
       // Check that the document still exists
-      var snapFrom = await fromCollection.document(element.documentID).get();
+      var snapFrom = await fromCollection.doc(element.documentID).get();
       if (!snapFrom.exists) {
         return;
       }
       // Check that the document does not exist on the target collection
-      var snapTo = await toCollection.document(element.documentID).get();
+      var snapTo = await toCollection.doc(element.documentID).get();
       if (snapTo.exists) {
         return;
       }

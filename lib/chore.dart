@@ -10,8 +10,8 @@ class Chore {
   Chore({this.title, this.description});
 
   void add(WriteBatch batch, DocumentReference documentReference) {
-    return batch.setData(
-        documentReference, {'title': title, 'description': description});
+    return batch
+        .set(documentReference, {'title': title, 'description': description});
   }
 
   void delete(WriteBatch batch, DocumentReference documentReference) {

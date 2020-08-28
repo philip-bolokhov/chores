@@ -91,8 +91,8 @@ class EditChoreViewState extends State<EditChoreView> {
                           };
                           await (widget.chore != null
                               ? widget.collectionReference
-                                  .document(widget.documentID)
-                                  .setData(dataToSave, merge: true)
+                                  .doc(widget.documentID)
+                                  .set(dataToSave, SetOptions(merge: true))
                               : widget.collectionReference.add(dataToSave));
                         } catch (e) {
                           final snackBar =

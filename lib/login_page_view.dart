@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 class LoginPageView extends StatelessWidget {
   final _logoColor = Color(0xff00bfff);
-  final _logoAltColor = Color(0xff8EF0C1);
+  // final _logoAltColor = Color(0xff8EF0C1);
   final _googleBackgroundColor = Color(0xff4285F4);
 
   @override

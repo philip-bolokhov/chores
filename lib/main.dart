@@ -1,8 +1,11 @@
-import 'package:chores/routing_constants.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'router.dart';
+
+import './routing_constants.dart';
+import './router.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   Future.delayed(Duration(seconds: 3), () {
     runApp(MyApp());
   });
@@ -10,17 +13,43 @@ void main() {
 
 class MyApp extends StatelessWidget {
   static const MAX_PAGE_WIDTH = 800;
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      if (constraints.maxWidth > MAX_PAGE_WIDTH) {
-        return _wideLayout(constraints);
-      } else {
-        return _normalLayout();
-      }
-    });
+    return FutureBuilder(
+      // Initialize FlutterFire:
+      future: _initialization,
+      builder: (context, snapshot) {
+        // Check for errors
+        if (snapshot.hasError) {
+          return Center(
+              child: Text(
+            "Firebase connection error",
+            textDirection: TextDirection.ltr,
+          )); // AAAA
+        }
+
+        // Once complete, show your application
+        if (snapshot.connectionState == ConnectionState.done) {
+          return LayoutBuilder(builder: (context, constraints) {
+            if (constraints.maxWidth > MAX_PAGE_WIDTH) {
+              return _wideLayout(constraints);
+            } else {
+              return _normalLayout();
+            }
+          });
+        }
+
+        // Otherwise, show something whilst waiting for initialization to complete
+        return Center(
+            child: Text(
+          "Loading",
+          textDirection: TextDirection.ltr,
+        )); // AAAA
+      },
+    );
   }
 
   Widget _mainApp() {

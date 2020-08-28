@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:chores/routing_constants.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginPageView extends StatelessWidget {
@@ -113,12 +114,38 @@ class LoginPageView extends StatelessWidget {
             ],
           ),
           color: _googleBackgroundColor,
-          onPressed: () => Navigator.pushNamed(context, HomePageViewRoute),
+          onPressed: () => _signInHandler(context),
           shape: new RoundedRectangleBorder(
               borderRadius: new BorderRadius.circular(30.0)),
           textColor: Colors.white,
         ),
       ),
     );
+  }
+
+  // Handle the 'Sign in with Google' button event
+  void _signInHandler(BuildContext context) async {
+    final UserCredential userCredential = await _signInWithGoogle();
+    print(
+        "Got user '${userCredential.user.displayName}', email '${userCredential.user.email}'");
+    Navigator.pushNamed(context, HomePageViewRoute);
+  }
+
+  Future<UserCredential> _signInWithGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+
+    // Create a new credential
+    final GoogleAuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 }

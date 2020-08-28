@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 class LoginPageView extends StatelessWidget {
   final _logoColor = Color(0xff00bfff);
+  final _logoAltColor = Color(0xff8EF0C1);
   final _googleBackgroundColor = Color(0xff4285F4);
 
   @override
@@ -28,25 +29,37 @@ class LoginPageView extends StatelessWidget {
                     child: Text(
                       'Chores',
                       style: GoogleFonts.fugazOne(
-                          color: _logoColor,
-                          fontSize: 80,
-                          fontWeight: FontWeight.w500,
-                          shadows: <Shadow>[
-                            Shadow(
-                                offset: Offset.zero,
-                                blurRadius: 60,
-                                color: _logoColor),
-                          ]),
+                        color: _logoColor,
+                        fontSize: 80,
+                        fontWeight: FontWeight.w500,
+                        shadows: <Shadow>[
+                          Shadow(
+                              offset: Offset.zero,
+                              blurRadius: 60,
+                              color: _logoColor),
+                        ],
+                      ),
                     ),
                   ),
                 ),
                 Expanded(
                   child: Column(
                     children: [
-                      Image(
-                        width: 160.75,
-                        height: 91,
-                        image: AssetImage("assets/icons/logo.png"),
+                      Container(
+                        child: Image(
+                          width: 160.75,
+                          height: 91,
+                          image: AssetImage("assets/icons/logo-bicolor.png"),
+                        ),
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              offset: Offset.zero,
+                              blurRadius: 40.0,
+                              color: _logoColor,
+                            ),
+                          ],
+                        ),
                       ),
                       Spacer(),
                       _signInButton(context),
@@ -66,43 +79,44 @@ class LoginPageView extends StatelessWidget {
   Widget _signInButton(BuildContext context) {
     const double letterGSize = 28;
     const double circleSize = 54;
-    return ButtonTheme(
-      minWidth: 280,
-      height: 60,
-      child: RaisedButton(
-        padding: EdgeInsets.symmetric(horizontal: 3),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                      maxWidth: circleSize, maxHeight: circleSize),
-                  child: Container(
-                    padding: EdgeInsets.all((circleSize - letterGSize) / 2.0),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                    ),
-                    child: Image.asset("assets/icons/google-logo.png"),
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: 280),
+      child: ButtonTheme(
+        minWidth: 280,
+        height: 60,
+        child: RaisedButton(
+          padding: EdgeInsets.symmetric(horizontal: 3),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: circleSize,
+                  maxHeight: circleSize,
+                ),
+                child: Container(
+                  padding: EdgeInsets.all((circleSize - letterGSize) / 2.0),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white,
                   ),
+                  child: Image.asset("assets/icons/google-logo.png"),
                 ),
-                Text(
-                  'Sign in with Google',
-                  style: TextStyle(fontSize: 20),
-                ),
-              ],
-            ),
-          ],
+              ),
+              SizedBox(width: 18),
+              Text(
+                'Sign in with Google',
+                style: TextStyle(fontSize: 20),
+              ),
+            ],
+          ),
+          color: _googleBackgroundColor,
+          onPressed: () => Navigator.pushNamed(context, HomePageViewRoute),
+          shape: new RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(30.0)),
+          textColor: Colors.white,
         ),
-        color: _googleBackgroundColor,
-        onPressed: () => Navigator.pushNamed(context, HomePageViewRoute),
-        shape: new RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(30.0)),
-        textColor: Colors.white,
       ),
     );
   }
